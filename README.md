@@ -41,7 +41,7 @@ UI: Streamlit (for the chatbot interface)
 
 🚀 How to Use
 1️⃣ Clone the Repository
-git clone https://github.com/your-username/medibot.git
+git clone https://github.com/Anjanakumariiii/MediBot-AI-Powered-Medical-Chatbot
 cd medibot
 
 2️⃣ Install Dependencies
