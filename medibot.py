@@ -212,11 +212,10 @@ def set_custom_prompt(template):
 # Load HuggingFace LLM using LangChain's updated HuggingFaceEndpoint
 def load_llm(huggingface_repo_id, HF_TOKEN):
     llm = HuggingFaceEndpoint(
-    repo_id=huggingface_repo_id,
-    temperature=0.5,
-    huggingfacehub_api_token=HF_TOKEN
-)
-
+        repo_id=huggingface_repo_id,
+        temperature=0.5,
+        huggingfacehub_api_token=HF_TOKEN
+    )
     return llm
 
 # Main app logic
@@ -245,7 +244,7 @@ def main():
         Answer concisely without small talk.
         """
 
-        HUGGINGFACE_REPO_ID = "mistralai/Mistral-7B-Instruct-v0.3"
+        HUGGINGFACE_REPO_ID = "tiiuae/falcon-7b-instruct"
         HF_TOKEN = st.secrets["HF_TOKEN"]
 
         try:
@@ -276,4 +275,3 @@ def main():
 # Run app
 if __name__ == "__main__":
     main()
-
