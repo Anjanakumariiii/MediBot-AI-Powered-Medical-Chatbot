@@ -6,3 +6,4 @@ transformers
 faiss-cpu
 pypdf
 hugging face 
+sentence-transformers
