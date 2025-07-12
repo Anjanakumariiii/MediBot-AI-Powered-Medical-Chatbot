@@ -212,11 +212,11 @@ def set_custom_prompt(template):
 # Load HuggingFace LLM using LangChain's updated HuggingFaceEndpoint
 def load_llm(huggingface_repo_id, HF_TOKEN):
     llm = HuggingFaceEndpoint(
-        repo_id=huggingface_repo_id,
-        temperature=0.5,
-        huggingfacehub_api_token=HF_TOKEN,
-        model_kwargs={"max_length": "512"}
-    )
+    repo_id=huggingface_repo_id,
+    temperature=0.5,
+    huggingfacehub_api_token=HF_TOKEN
+)
+
     return llm
 
 # Main app logic
