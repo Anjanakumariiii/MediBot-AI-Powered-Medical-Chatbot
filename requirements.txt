@@ -2,9 +2,9 @@ streamlit
 langchain
 langchain-community
 langchain-huggingface>=0.3.0
-openai
 transformers
-faiss-cpu
-pypdf
 sentence-transformers
-huggingface_hub>=0.30.2
+faiss-cpu
+openai
+python-dotenv
+pypdf
