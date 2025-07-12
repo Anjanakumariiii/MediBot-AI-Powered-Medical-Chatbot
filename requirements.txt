@@ -1,4 +1,3 @@
-
 streamlit
 langchain
 langchain-community
@@ -8,5 +7,5 @@ transformers
 faiss-cpu
 pypdf
 sentence-transformers
-huggingface_hub==0.22.2
+huggingface_hub
 
