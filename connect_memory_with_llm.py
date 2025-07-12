@@ -1,9 +1,11 @@
 import os
+from langchain_community.llms import HuggingFaceEndpoint
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
-from langchain_huggingface import HuggingFaceEndpoint
+
 from langchain_core.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
-from langchain_huggingface import HuggingFaceEmbeddings
+
 from langchain_community.vectorstores import FAISS
 
 # Step 1: Setup LLM (Mistral with HuggingFace)
