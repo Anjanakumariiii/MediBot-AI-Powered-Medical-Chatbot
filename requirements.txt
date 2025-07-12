@@ -1,8 +1,11 @@
+
 streamlit
 langchain
 langchain-community
+langchain-huggingface
 openai
 transformers
 faiss-cpu
 pypdf
 sentence-transformers
+
