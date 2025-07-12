@@ -193,10 +193,37 @@ from langchain.chains import RetrievalQA
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
 
-# Streamlit Page Config
-st.set_page_config(page_title="MediBot AI 🩺", page_icon="🩺", layout="wide")
+# Page configuration
+st.set_page_config(page_title="🩺 MediBot AI", page_icon="🩺", layout="wide")
 
-# Load FAISS vector database
+# App styling
+st.markdown("""
+    <style>
+    .reportview-container { padding: 2rem; }
+    .stButton button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        margin: 0.5rem 0;
+    }
+    .stChatInput textarea {
+        font-size: 1rem;
+    }
+    .footer {
+        position: fixed;
+        bottom: 5px;
+        text-align: center;
+        width: 100%;
+        color: gray;
+        font-size: 0.8rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Load vector database
 DB_FAISS_PATH = "vectorstore/db_faiss"
 
 @st.cache_resource
@@ -205,20 +232,19 @@ def get_vectorstore():
     db = FAISS.load_local(DB_FAISS_PATH, embedding_model, allow_dangerous_deserialization=True)
     return db
 
-# Custom prompt
+# Custom prompt template
 def set_custom_prompt(template):
     return PromptTemplate(template=template, input_variables=["context", "question"])
 
-# Load HuggingFace LLM using LangChain's updated HuggingFaceEndpoint
+# Load HuggingFace LLM
 def load_llm(huggingface_repo_id, HF_TOKEN):
-    llm = HuggingFaceEndpoint(
+    return HuggingFaceEndpoint(
         repo_id=huggingface_repo_id,
         temperature=0.5,
         huggingfacehub_api_token=HF_TOKEN
     )
-    return llm
 
-# Main app logic
+# Main application
 def main():
     st.title("🩺 MediBot AI - Your Health Assistant")
 
@@ -228,24 +254,28 @@ def main():
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).markdown(msg["content"])
 
-    prompt = st.chat_input("💬 Ask your health-related query here...")
+    prompt = st.chat_input("💬 Type your health-related query here...")
 
     if prompt:
         st.chat_message("user").markdown(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         CUSTOM_PROMPT_TEMPLATE = """
-        Use the pieces of information provided in the context to answer the user's question.
-        If you don't know the answer, say you don't know. Stick strictly to the given context.
+        Use the context provided below to answer the user's question.
+        If unsure, say you don't know. Be precise and stick to the context.
 
         Context: {context}
         Question: {question}
 
-        Answer concisely without small talk.
+        Provide a concise answer.
         """
 
         HUGGINGFACE_REPO_ID = "tiiuae/falcon-7b-instruct"
-        HF_TOKEN = st.secrets["HF_TOKEN"]
+        HF_TOKEN = st.secrets.get("HF_TOKEN")
+
+        if not HF_TOKEN:
+            st.error("⚠️ Hugging Face token is missing! Please set 'HF_TOKEN' in Streamlit Cloud Secrets.")
+            return
 
         try:
             vectorstore = get_vectorstore()
@@ -262,7 +292,7 @@ def main():
             result = response["result"]
             sources = response["source_documents"]
 
-            result_to_show = result + "\n\n**📚 Sources:**\n"
+            result_to_show = f"**Answer:**\n{result}\n\n**📚 Sources:**\n"
             for idx, doc in enumerate(sources, 1):
                 result_to_show += f"- 📄 Document {idx}: {doc.metadata.get('source', 'Unknown')}\n"
 
@@ -270,7 +300,10 @@ def main():
             st.session_state.messages.append({"role": "assistant", "content": result_to_show})
 
         except Exception as e:
-            st.error(f"Error: {str(e)}")
+            st.error("❌ An error occurred during response generation.")
+            st.write(e)
+
+    st.markdown("<div class='footer'>© 2025 MediBot AI | Built with ❤️ by Nainaa</div>", unsafe_allow_html=True)
 
 # Run app
 if __name__ == "__main__":
