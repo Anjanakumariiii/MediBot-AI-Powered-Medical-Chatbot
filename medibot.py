@@ -289,7 +289,9 @@ def main():
         """
 
         HUGGINGFACE_REPO_ID = "mistralai/Mistral-7B-Instruct-v0.3"
-        HF_TOKEN = os.environ.get("HF_TOKEN")
+        # HF_TOKEN = os.environ.get("HF_TOKEN")
+        HF_TOKEN = st.secrets["HF_TOKEN"]
+
 
         try:
             vectorstore = get_vectorstore()
