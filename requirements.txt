@@ -1,4 +1,8 @@
 streamlit
 langchain
+langchain-community
 openai
 transformers
+faiss-cpu
+pypdf
+hugging face 
