@@ -236,13 +236,21 @@ def set_custom_prompt(template):
     return PromptTemplate(template=template, input_variables=["context", "question"])
 
 # Load LLM with correct task
+# def load_llm(huggingface_repo_id, HF_TOKEN):
+#     return HuggingFaceEndpoint(
+#         repo_id=huggingface_repo_id,
+#         task="text2text-generation",  # KEY FIX: set correct task
+#         temperature=0.5,
+#         huggingfacehub_api_token=HF_TOKEN
+#     )
 def load_llm(huggingface_repo_id, HF_TOKEN):
     return HuggingFaceEndpoint(
         repo_id=huggingface_repo_id,
-        task="text2text-generation",  # KEY FIX: set correct task
+        task="text2text-generation",  # <---- ✅ Corrected here
         temperature=0.5,
         huggingfacehub_api_token=HF_TOKEN
     )
+
 
 # Main Streamlit app function
 def main():
