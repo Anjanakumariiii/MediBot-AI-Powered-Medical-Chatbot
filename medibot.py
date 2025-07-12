@@ -193,10 +193,9 @@ from langchain.chains import RetrievalQA
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
 
-# Page configuration
+# Page config and CSS styling
 st.set_page_config(page_title="🩺 MediBot AI", page_icon="🩺", layout="wide")
 
-# App styling
 st.markdown("""
     <style>
     .reportview-container { padding: 2rem; }
@@ -223,7 +222,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Load vector database
+# Load FAISS vectorstore
 DB_FAISS_PATH = "vectorstore/db_faiss"
 
 @st.cache_resource
@@ -232,19 +231,20 @@ def get_vectorstore():
     db = FAISS.load_local(DB_FAISS_PATH, embedding_model, allow_dangerous_deserialization=True)
     return db
 
-# Custom prompt template
+# Define custom prompt template
 def set_custom_prompt(template):
     return PromptTemplate(template=template, input_variables=["context", "question"])
 
-# Load HuggingFace LLM
+# Load LLM with correct task
 def load_llm(huggingface_repo_id, HF_TOKEN):
     return HuggingFaceEndpoint(
         repo_id=huggingface_repo_id,
+        task="text2text-generation",  # KEY FIX: set correct task
         temperature=0.5,
         huggingfacehub_api_token=HF_TOKEN
     )
 
-# Main application
+# Main Streamlit app function
 def main():
     st.title("🩺 MediBot AI - Your Health Assistant")
 
@@ -254,20 +254,20 @@ def main():
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).markdown(msg["content"])
 
-    prompt = st.chat_input("💬 Type your health-related query here...")
+    prompt = st.chat_input("💬 Type your health-related question here...")
 
     if prompt:
         st.chat_message("user").markdown(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         CUSTOM_PROMPT_TEMPLATE = """
-        Use the context provided below to answer the user's question.
-        If unsure, say you don't know. Be precise and stick to the context.
+        Use the context provided below to answer the user's health-related question.
+        If unsure, say you don't know. Stick to the given context.
 
         Context: {context}
         Question: {question}
 
-        Provide a concise answer.
+        Provide a clear, friendly answer.
         """
 
         HUGGINGFACE_REPO_ID = "tiiuae/falcon-7b-instruct"
@@ -300,7 +300,7 @@ def main():
             st.session_state.messages.append({"role": "assistant", "content": result_to_show})
 
         except Exception as e:
-            st.error("❌ An error occurred during response generation.")
+            st.error("❌ An error occurred while generating the response.")
             st.write(e)
 
     st.markdown("<div class='footer'>© 2025 MediBot AI | Built with ❤️ by Nainaa</div>", unsafe_allow_html=True)
